@@ -4,7 +4,7 @@ export function getBaseUrl(): string {
   if (process.env.NODE_ENV === 'development') {
     baseUrl = 'http://localhost:3000'
   } else {
-    baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL || ''
+    baseUrl = process.env.VERCEL_URL || ''
     if (baseUrl && !/^https?:\/\//i.test(baseUrl)) {
       baseUrl = `https://${baseUrl}`
     }
