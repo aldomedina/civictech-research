@@ -1,6 +1,6 @@
 # Civic Tech Field Notebook App
 
-Welcome to the Civic Tech Field Notebook App! This application is designed to facilitate the benchmarking phase of a civic tech research project for the Government of Scotland. Built with Next.js and PostgreSQL, this app serves as a digital field notebook, providing a structured environment for collecting and organizing research data, including an inquiry matrix.
+This application is designed to facilitate the benchmarking phase of a civic tech research project for the Government of Scotland. Built with Next.js and PostgreSQL, this app serves as a digital field notebook, providing a structured environment for collecting and organizing research data, including an inquiry matrix.
 
 ## Table of Contents
 
