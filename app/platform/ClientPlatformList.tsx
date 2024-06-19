@@ -13,6 +13,7 @@ type ClientPlatformListProps = {
 }
 
 const ClientPlatformList: React.FC<ClientPlatformListProps> = ({ platforms }) => {
+  console.log(platforms, '::::platforms')
   return (
     <ul className='flex flex-col md:grid gap-4 md:grid-cols-2 md:grid-rows-2'>
       {platforms.map((platform) => (

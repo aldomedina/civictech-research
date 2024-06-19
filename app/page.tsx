@@ -9,7 +9,6 @@ export default function Home() {
         <div className='h-3 bg-lima flex-1' />
       </div>
       <SignInForm />
-      {process.env.NEXT_PUBLIC_VERCEL_URL || 'NEXT_PUBLIC_VERCEL_URL not working'}
     </main>
   )
 }
