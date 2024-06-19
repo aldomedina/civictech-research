@@ -21,7 +21,6 @@ The Civic Tech Field Notebook App is a specialized tool developed to support res
 - **Data Entry:** Easy-to-use forms for documenting observations and insights.
 - **Data Management:** Tools for viewing, editing, and deleting entries.
 - **Responsive Design:** Optimized for use on both desktop and mobile devices.
-- **Export Functionality:** Export collected data to various formats for further analysis.
 
 ## Installation
 
