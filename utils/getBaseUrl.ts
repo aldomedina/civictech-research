@@ -1,7 +1,14 @@
-export function getBaseUrl() {
+export function getBaseUrl(): string {
+  let baseUrl: string = ''
+
   if (process.env.NODE_ENV === 'development') {
-    return 'http://localhost:3000'
+    baseUrl = 'http://localhost:3000'
   } else {
-    return process.env.NEXT_PUBLIC_VERCEL_URL || 'https://your-production-url.vercel.app'
+    baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL || ''
+    if (baseUrl && !/^https?:\/\//i.test(baseUrl)) {
+      baseUrl = `https://${baseUrl}`
+    }
   }
+
+  return baseUrl
 }
