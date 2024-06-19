@@ -5,9 +5,7 @@ export function getBaseUrl(): string {
     baseUrl = 'http://localhost:3000'
   } else {
     baseUrl = process.env.VERCEL_URL || ''
-    if (baseUrl && !/^https?:\/\//i.test(baseUrl)) {
-      baseUrl = `https://${baseUrl}`
-    }
+    baseUrl = `https://${baseUrl}`
   }
 
   return baseUrl
