@@ -2,10 +2,11 @@ import PlatformHeader from '@/components/PlatformHeader'
 import { notFound } from 'next/navigation'
 import AddNote from './AddNote'
 import NoteCard from '@/components/NoteCard'
+import { getBaseUrl } from '@/utils/getBaseUrl'
 
 const NotesPage = async ({ params }: { params: { platform_name: string } }) => {
   const { platform_name } = params
-  const url = `http://localhost:3000/api/platforms/${platform_name}/notes`
+  const url = `${getBaseUrl()}/api/platforms/${platform_name}/notes`
   const response = await fetch(url)
   if (!response.ok) {
     notFound()

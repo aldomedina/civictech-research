@@ -4,6 +4,7 @@ import ProgressCard from '@/components/ProgressCard'
 import PlatformHeader from '@/components/PlatformHeader'
 import SubmitAssessmentCTA from './SubmitAssessmentCTA'
 import Link from 'next/link'
+import { getBaseUrl } from '@/utils/getBaseUrl'
 
 interface IAssessment {
   name: string
@@ -14,7 +15,7 @@ interface IAssessment {
 
 const PlatformPage = async ({ params }: { params: { platform_name: string } }) => {
   const platform_name = params.platform_name
-  const response = await fetch(`http://localhost:3000/api/platforms/${platform_name}`)
+  const response = await fetch(`${getBaseUrl()}/api/platforms/${platform_name}`)
   if (!response.ok) {
     notFound()
     return null

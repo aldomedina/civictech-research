@@ -1,9 +1,10 @@
 // app/platform/page.tsx
 
+import { getBaseUrl } from '@/utils/getBaseUrl'
 import ClientPlatformList from './ClientPlatformList'
 
 async function fetchPlatforms() {
-  const response = await fetch('http://localhost:3000/api/platforms')
+  const response = await fetch(`${getBaseUrl()}/api/platforms`)
   if (response.ok) {
     return response.json()
   }

@@ -2,10 +2,11 @@ import { notFound } from 'next/navigation'
 import AssessmentCard from '@/components/AssessmentCard'
 import Button from '@/components/Button'
 import PlatformHeader from '@/components/PlatformHeader'
+import { getBaseUrl } from '@/utils/getBaseUrl'
 
 const AssessmentPage = async ({ params }: { params: { platform_name: string; type: string } }) => {
   const { platform_name, type } = params
-  const url = `http://localhost:3000/api/platforms/${platform_name}/assessment/${type}`
+  const url = `${getBaseUrl()}/api/platforms/${platform_name}/assessment/${type}`
   const response = await fetch(url)
 
   if (!response.ok) {
