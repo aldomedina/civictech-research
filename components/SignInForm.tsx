@@ -1,52 +1,66 @@
-// components/SignInForm.tsx
-
 'use client'
+import Button from '@/components/Button'
+import TextInput from '@/components/TextInput'
+import { Form, Formik } from 'formik'
+import { signIn } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
+import React, { useState } from 'react'
+import { z } from 'zod'
+import { toFormikValidationSchema } from 'zod-formik-adapter'
 
-import React from 'react'
-import { Formik, Form } from 'formik'
-import * as Yup from 'yup'
-import Button from './Button'
-import TextInput from './TextInput'
-
-// Validación del esquema con Yup
-const validationSchema = Yup.object({
-  user: Yup.string().required('User is required'),
-  password: Yup.string().required('Password is required'),
+const validationSchema = z.object({
+  email: z.string().email({ message: 'Invalid email address' }).min(1, { message: 'Email is required' }),
+  password: z.string().min(1, { message: 'Password is required' }),
 })
 
-const SignInForm: React.FC = () => {
+const SignInForm = () => {
+  const [error, setError] = useState<string | null>(null)
+  const router = useRouter()
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLFormElement>, submitForm: () => void) => {
+    if (event.key === 'Enter') {
+      event.preventDefault()
+      submitForm()
+    }
+  }
+
   return (
-    <div className='min-h-screen flex items-center justify-center'>
-      <div className='w-full max-w-sm'>
-        <div className='mb-12 text-center'>
-          <h1 className='font-bold text-2xl'>Welcome</h1>
-          <h4 className='text-gray-500'>please, sign in</h4>
-        </div>
-        <Formik
-          initialValues={{ user: '', password: '' }}
-          validationSchema={validationSchema}
-          onSubmit={(values, { setSubmitting }) => {
-            setSubmitting(false)
-          }}
-        >
-          {({ isSubmitting }) => (
-            <Form>
-              <TextInput id='user' name='user' label='User' type='text' className='mb-4' />
-              <TextInput id='password' name='password' label='Password' type='password' className='mb-16' />
-              <Button
-                type='submit'
-                size='xl'
-                variant='contained'
-                className='bg-black text-white w-full'
-                disabled={isSubmitting}
-              >
-                SUBMIT SURVEY
-              </Button>
-            </Form>
-          )}
-        </Formik>
-      </div>
-    </div>
+    <Formik
+      initialValues={{ email: '', password: '' }}
+      validationSchema={toFormikValidationSchema(validationSchema)}
+      onSubmit={async (values, { setSubmitting, resetForm }) => {
+        setSubmitting(true)
+        setError(null)
+        try {
+          signIn('credentials', { ...values, redirect: false })
+          router.push('/platform')
+          router.refresh()
+        } catch (error) {
+          if (error instanceof Error) {
+            setError(error.message)
+          }
+        } finally {
+          setSubmitting(false)
+        }
+      }}
+    >
+      {({ isSubmitting, submitForm }) => (
+        <Form className='w-full' onKeyDown={(event) => handleKeyDown(event, submitForm)}>
+          <TextInput id='email' name='email' label='Email' type='text' className='mb-4' disabled={isSubmitting} />
+          <TextInput
+            id='password'
+            name='password'
+            label='Password'
+            type='password'
+            className='mb-16'
+            disabled={isSubmitting}
+          />
+          {error && <div className='text-red-500 mb-4'>{error}</div>}
+          <Button fullWidth type='submit' size='xl' variant='contained' disabled={isSubmitting}>
+            {isSubmitting ? 'LOADING...' : 'LOGIN'}
+          </Button>
+        </Form>
+      )}
+    </Formik>
   )
 }
 

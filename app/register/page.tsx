@@ -1,13 +1,7 @@
-import SignInForm from '@/components/SignInForm'
-import { getServerSession } from 'next-auth'
-import { redirect } from 'next/navigation'
 import React from 'react'
+import RegisterForm from './RegisterForm'
 
-const HomePage = async () => {
-  const session = await getServerSession()
-  if (session) {
-    redirect('/platform')
-  }
+const RegisterPage = () => {
   return (
     <main className='flex min-h-screen items-center font-sans justify-center'>
       <div className='absolute top-0 w-full flex'>
@@ -19,12 +13,12 @@ const HomePage = async () => {
       <div className='max-w-xs w-full'>
         <div className='mb-12 text-center'>
           <h1 className='font-bold text-2xl'>Welcome</h1>
-          <h4 className='text-gray-500'>please, sign in</h4>
+          <h4 className='text-gray-500'>please, sign up</h4>
         </div>
-        <SignInForm />
+        <RegisterForm />
       </div>
     </main>
   )
 }
 
-export default HomePage
+export default RegisterPage

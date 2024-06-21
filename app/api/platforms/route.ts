@@ -1,6 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server'
-
+// /app/api/platforms/route.ts
 import platforms_placeholder from '@/placeholders/platforms'
-export async function GET(request: NextRequest) {
+import { NextResponse } from 'next/server'
+
+export async function GET(request: Request) {
   return NextResponse.json(platforms_placeholder)
 }
