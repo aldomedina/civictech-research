@@ -4,10 +4,11 @@ import Link from 'next/link'
 
 interface PlatformCardProps {
   title: string
+  slug: string
   state: boolean
 }
 
-const PlatformCard: React.FC<PlatformCardProps> = ({ title, state }) => {
+const PlatformCard: React.FC<PlatformCardProps> = ({ title, state, slug }) => {
   const cardStyles = classNames(
     'flex justify-between items-center p-6 rounded-md hover:bg-gray-100 transition duration-300 hover:shadow-md',
     {
@@ -21,7 +22,7 @@ const PlatformCard: React.FC<PlatformCardProps> = ({ title, state }) => {
       className={state ? 'pointer-events-none' : ''}
       aria-disabled={state}
       tabIndex={state ? -1 : undefined}
-      href={`/platform/${title.toLocaleLowerCase()}/instructions`}
+      href={`/platform/${slug}/instructions`}
     >
       <div className={cardStyles}>
         <h2

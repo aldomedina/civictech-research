@@ -5,6 +5,7 @@ import PlatformHeader from '@/components/PlatformHeader'
 import SubmitAssessmentCTA from './SubmitAssessmentCTA'
 import Link from 'next/link'
 import { getBaseUrl } from '@/utils/getBaseUrl'
+import AssessmentsCardList from './AssessmentsCardList'
 
 interface IAssessment {
   name: string
@@ -15,13 +16,6 @@ interface IAssessment {
 
 const PlatformPage = async ({ params }: { params: { platform_name: string } }) => {
   const platform_name = params.platform_name
-  const response = await fetch(`${getBaseUrl()}/api/platforms/${platform_name}`)
-  if (!response.ok) {
-    notFound()
-    return null
-  }
-
-  const data = await response.json()
 
   return (
     <div>
@@ -36,15 +30,7 @@ const PlatformPage = async ({ params }: { params: { platform_name: string } }) =
       />
 
       <div className='flex flex-col mb-6 md:grid gap-4 md:grid-cols-2 md:grid-rows-2'>
-        {data.assessments?.map((item: IAssessment) => (
-          <ProgressCard
-            key={item.type}
-            type={item.type}
-            count={item.count}
-            total={item.total}
-            href={`/platform/${platform_name}/assessment/${item.type}`}
-          />
-        ))}
+        <AssessmentsCardList slug={platform_name} />
         <Link href={`/platform/${platform_name}/notes`}>
           <div className='flex items-center justify-between rounded-lg bg-gray-200 p-4 transition duration-300 hover:shadow-md hover:opacity-85  '>
             <div className='flex flex-col justify-between min-h-28'>
