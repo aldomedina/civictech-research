@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { persist } from 'zustand/middleware'
 
 export interface IUser {
   id: string
@@ -12,8 +13,15 @@ interface AuthState {
   clearUser: () => void
 }
 
-export const useAuthStore = create<AuthState>((set) => ({
-  user: null,
-  setUser: (user) => set({ user }),
-  clearUser: () => set({ user: null }),
-}))
+export const useAuthStore = create(
+  persist<AuthState>(
+    (set) => ({
+      user: null,
+      setUser: (user) => set({ user }),
+      clearUser: () => set({ user: null }),
+    }),
+    {
+      name: 'auth-store', // Nombre del key en localStorage
+    },
+  ),
+)

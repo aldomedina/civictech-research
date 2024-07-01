@@ -21,6 +21,8 @@ const ANSWER_OPTIONS = [
   },
 ]
 
+type TCommentStatus = 'closed' | 'read' | 'editing'
+
 const AssessmentCard = ({
   index,
   type,
@@ -28,40 +30,52 @@ const AssessmentCard = ({
   description,
   answer,
   comment,
-  id, // Necesitamos pasar el id como prop
+  id,
+  onAnswerSubmit,
+  onCommentSubmit,
 }: {
+  id: number | string
   type: string
   assessment: string
   description: string
-  answer: string
-  comment: string
-  id: number | string // Tipo del id
-  index: number // Tipo del id
+  answer?: string
+  comment?: string
+  index: number
+  onAnswerSubmit: (assessmentId: number | string, answer: string) => Promise<void>
+  onCommentSubmit: (assessmentId: number | string, comment: string) => Promise<void>
 }) => {
   const [isOpen, setIsOpen] = useState(false)
   const [localAnswer, setLocalAnswer] = useState(answer)
-  const [isCommenting, setIsCommenting] = useState(false)
+  const [commentStatus, setCommentStatus] = useState<TCommentStatus>(comment ? 'read' : 'closed')
   const [localComment, setLocalComment] = useState(comment)
+  const [isSubmittingAnswer, setIsSubmittingAnswer] = useState(false)
+  const [isSubmittingComment, setIsSubmittingComment] = useState(false)
 
   const handleAnswerSubmit = async (newAnswer: string) => {
+    setIsSubmittingAnswer(true)
     setLocalAnswer(newAnswer)
+    await onAnswerSubmit(id, newAnswer)
+    setIsSubmittingAnswer(false)
   }
 
-  const handleCommentSave = (newComment: string) => {
+  const handleCommentSave = async (newComment: string) => {
     setLocalComment(newComment)
-    setIsCommenting(false)
+    setIsSubmittingComment(true)
+    await onCommentSubmit(id, newComment)
+    setIsSubmittingComment(false)
+    setCommentStatus(newComment ? 'read' : 'closed')
   }
 
-  const wrapperStyle = classNames('flex flex-col gap-4 p-4 items-end  rounded-md', {
-    'bg-cielo': type == 'before',
-    'bg-lima': type == 'after',
-    'bg-lila': type == 'during',
+  const wrapperStyle = classNames('flex flex-col gap-4 p-4 items-end rounded-md', {
+    'bg-cielo': type === 'before',
+    'bg-lima': type === 'after',
+    'bg-lila': type === 'during',
   })
 
   return (
     <div className={wrapperStyle}>
       <div className='flex justify-between items-start w-full'>
-        <h3 className=''>{`${index + 1}. ${assessment}`}</h3>
+        <h3>{`${index + 1}. ${assessment}`}</h3>
         <button onClick={() => setIsOpen(!isOpen)}>
           <InformationCircleIcon className={`mt-1 h-6 w-6 overflow-hidden rounded-full ${isOpen && 'bg-white'}`} />
         </button>
@@ -74,32 +88,39 @@ const AssessmentCard = ({
               key={assessment + el.value}
               onClick={() => handleAnswerSubmit(el.value)}
               className={`text-left text-sm px-4 py-2 rounded-md border border-white uppercase font-mono ${
-                localAnswer === el.value ? 'bg-[rgba(255,255,255,.5)] text-black' : ' text-black'
-              }`}
+                localAnswer === el.value ? 'bg-[rgba(255,255,255,.5)] text-black' : 'text-black'
+              } disabled:opacity-50`}
+              disabled={isSubmittingAnswer}
             >
               {el.label}
             </button>
           ))}
         </div>
-        {!comment && (
-          <Button variant='contained-wh' size='md' onClick={() => setIsCommenting(true)}>
+        {commentStatus == 'closed' && (
+          <Button variant='contained-wh' size='md' onClick={() => setCommentStatus('editing')}>
             + Comment
           </Button>
         )}
       </div>
-      {isCommenting && (
-        <CommentInput comment={localComment} onSave={handleCommentSave} onCancel={() => setIsCommenting(false)} />
+
+      {commentStatus == 'editing' && (
+        <CommentInput
+          comment={localComment || ''}
+          onSave={handleCommentSave}
+          onCancel={() => setCommentStatus(localComment ? 'read' : 'closed')}
+          isSubmitting={isSubmittingComment}
+        />
       )}
-      {!isCommenting && localComment && (
+      {commentStatus == 'read' && (
         <div className='italic mt-4 p-4 bg-[rgba(255,255,255,.5)] rounded-md w-[85%]'>
           <p className='text-gray-700 mb-4'>{localComment}</p>
           <div className='flex gap-2'>
-            <Button variant='contained-wh' size='md' onClick={() => setIsCommenting(true)}>
+            <Button variant='contained-wh' size='md' onClick={() => setCommentStatus('editing')}>
               Edit
             </Button>
-            <Button variant='contained-wh' size='md' onClick={() => setLocalComment('')}>
+            {/* <Button variant='contained-wh' size='md' onClick={() => setLocalComment('')}>
               Remove
-            </Button>
+            </Button> */}
           </div>
         </div>
       )}
