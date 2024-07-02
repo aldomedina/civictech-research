@@ -1,27 +1,21 @@
 import PlatformHeader from '@/components/PlatformHeader'
 import BottomCTA from './BottomCTA'
+import { getScenario } from '@/lib/data'
+import { notFound } from 'next/navigation'
+import { TPlatform } from '@/types'
 
 const PlatformScenario = async ({ params }: { params: { platform_name: string } }) => {
+  if (!['loomio', 'decidim', 'considerit', 'polis'].includes(params.platform_name)) {
+    notFound()
+  }
   return (
     <>
       <PlatformHeader active={params.platform_name} title={params.platform_name} subtitle='case scenario' />
 
       <div className='max-w-xl flex flex-col gap-6 mb-12 mx-auto'>
-        <p>
-          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Deleniti, esse? Dolores accusantium esse quod
-          pariatur sunt, consectetur asperiores necessitatibus obcaecati repudiandae soluta ipsa error incidunt? Quasi
-          cupiditate voluptatibus corporis minus.
-        </p>
-        <p>
-          Porro dolores consectetur neque exercitationem nam fugiat hic quos ab obcaecati similique. Lorem ipsum dolor
-          sit amet consectetur adipisicing elit. A, placeat laudantium. Culpa et nam, maxime maiores perspiciatis
-          deleniti nostrum sequi.
-        </p>
-        <p>
-          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Deleniti, esse? Dolores accusantium esse quod
-          pariatur sunt, consectetur asperiores necessitatibus obcaecati repudiandae soluta ipsa error incidunt? Quasi
-          cupiditate voluptatibus corporis minus.
-        </p>
+        {getScenario(params.platform_name as TPlatform).map((el) => (
+          <p key={el}>{el}</p>
+        ))}
       </div>
       <BottomCTA platform={params.platform_name} />
     </>

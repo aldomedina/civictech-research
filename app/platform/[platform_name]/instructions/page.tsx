@@ -1,9 +1,14 @@
-import { useSearchParams } from 'next/navigation'
+import { notFound } from 'next/navigation'
 
 import PlatformHeader from '@/components/PlatformHeader'
 import BottomCTA from './BottomCTA'
+import { getDescription } from '@/lib/data'
+import { TPlatform } from '@/types'
 
 const PlatformScenario = async ({ params }: { params: { platform_name: string } }) => {
+  if (!['loomio', 'decidim', 'considerit', 'polis'].includes(params.platform_name)) {
+    notFound()
+  }
   return (
     <>
       <PlatformHeader active={params.platform_name} title={params.platform_name} subtitle={'instructions'} />
@@ -24,6 +29,7 @@ const PlatformScenario = async ({ params }: { params: { platform_name: string } 
             <mark className='bg-lima'>Assess</mark> the tool.
           </li>
         </ol>
+        <p>{getDescription(params.platform_name as TPlatform)}</p>
       </div>
       <BottomCTA platform={params.platform_name} />
     </>

@@ -1,18 +1,5 @@
-import { notFound } from 'next/navigation'
-import ActivityButton from '@/components/ActivityButton'
-import ProgressCard from '@/components/ProgressCard'
 import PlatformHeader from '@/components/PlatformHeader'
-import SubmitAssessmentCTA from './SubmitAssessmentCTA'
-import Link from 'next/link'
-import { getBaseUrl } from '@/utils/getBaseUrl'
 import AssessmentsCardList from './AssessmentsCardList'
-
-interface IAssessment {
-  name: string
-  type: 'before' | 'during' | 'after'
-  count: number
-  total: number
-}
 
 const PlatformPage = async ({ params }: { params: { platform_name: string } }) => {
   const platform_name = params.platform_name
