@@ -81,8 +81,8 @@ const AssessmentCard = ({
         </button>
       </div>
       {isOpen && <div className='text-gray-700 max-w-md self-start ml-6'>{description}</div>}
-      <div className='flex justify-between gap-4 mt-4 w-full'>
-        <div className='flex flex-col justify-start gap-2'>
+      <div className='flex flex-col md:flex-row justify-between gap-4 mt-4 w-full'>
+        <div className='flex flex-col justify-start gap-2 w-max'>
           {ANSWER_OPTIONS.map((el) => (
             <button
               key={assessment + el.value}
@@ -110,7 +110,7 @@ const AssessmentCard = ({
           />
         )}
         {commentStatus == 'read' && (
-          <div className='italic p-4 bg-[rgba(255,255,255,.5)] rounded-md w-[85%] flex justify-between gap-4'>
+          <div className='italic p-4 bg-[rgba(255,255,255,.5)] rounded-md w-full md:w-[85%] flex justify-between gap-4'>
             <p className='text-gray-700 mb-4'>{localComment}</p>
 
             <button
