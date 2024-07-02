@@ -9,9 +9,9 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        cielo: '#C7D3FF',
-        lila: '#B196FF',
-        lima: '#D9E563',
+        cielo: '#AF99F1',
+        lila: '#F5D8B7',
+        lima: '#E1EF58',
         success: '#C1F093',
       },
       fontFamily: {

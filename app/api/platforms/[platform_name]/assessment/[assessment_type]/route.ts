@@ -1,3 +1,5 @@
+// /app/api/platforms/[platform_name]/assessments/[assessment_type]/route.ts
+
 import { authOptions } from '@/lib/auth'
 import assessment_placeholder from '@/placeholders/assessment'
 import { getServerSession } from 'next-auth'

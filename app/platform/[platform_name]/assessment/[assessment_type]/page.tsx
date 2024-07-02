@@ -1,12 +1,13 @@
-import { notFound } from 'next/navigation'
-import AssessmentCard from '@/components/AssessmentCard'
-import Button from '@/components/Button'
 import PlatformHeader from '@/components/PlatformHeader'
-import { getBaseUrl } from '@/utils/getBaseUrl'
 import AssessmentsList from './AssessmentsList'
+import { notFound } from 'next/navigation'
 
 const AssessmentPage = async ({ params }: { params: { platform_name: string; assessment_type: string } }) => {
   const { platform_name, assessment_type } = params
+
+  if (!['before', 'after', 'during'].includes(assessment_type)) {
+    notFound()
+  }
 
   return (
     <>

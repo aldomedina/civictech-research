@@ -11,7 +11,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 
 const Button: React.FC<ButtonProps> = ({ size, variant, className, children, fullWidth, ...props }) => {
   const baseStyles =
-    'font-mono transition duration-300 hover:shadow-lg  rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-75'
+    'font-mono h-max transition duration-300 hover:shadow-lg  rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-75'
 
   const sizeStyles = classNames({
     'px-1 py-[2px] text-xs rounded-full': size === 'sm',

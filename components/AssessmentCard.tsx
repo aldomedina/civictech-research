@@ -1,6 +1,6 @@
 'use client'
 
-import { InformationCircleIcon } from '@heroicons/react/24/outline'
+import { InformationCircleIcon, PencilIcon } from '@heroicons/react/24/outline'
 import React, { useState } from 'react'
 import CommentInput from './CommentInput'
 import classNames from 'classnames'
@@ -66,7 +66,7 @@ const AssessmentCard = ({
     setCommentStatus(newComment ? 'read' : 'closed')
   }
 
-  const wrapperStyle = classNames('flex flex-col gap-4 p-4 items-end rounded-md', {
+  const wrapperStyle = classNames('flex flex-col gap-4 p-4 md:px-8 md:py-6 items-end rounded-md', {
     'bg-cielo': type === 'before',
     'bg-lima': type === 'after',
     'bg-lila': type === 'during',
@@ -81,13 +81,13 @@ const AssessmentCard = ({
         </button>
       </div>
       {isOpen && <div className='text-gray-700 max-w-md self-start ml-6'>{description}</div>}
-      <div className='flex justify-between items-end mt-4 w-full'>
-        <div className='flex flex-col gap-2'>
+      <div className='flex justify-between gap-4 mt-4 w-full'>
+        <div className='flex flex-col justify-start gap-2'>
           {ANSWER_OPTIONS.map((el) => (
             <button
               key={assessment + el.value}
               onClick={() => handleAnswerSubmit(el.value)}
-              className={`text-left text-sm px-4 py-2 rounded-md border border-white uppercase font-mono ${
+              className={`text-left text-nowrap text-sm px-4 py-2 rounded-md border border-white uppercase font-mono ${
                 localAnswer === el.value ? 'bg-[rgba(255,255,255,.5)] text-black' : 'text-black'
               } disabled:opacity-50`}
               disabled={isSubmittingAnswer}
@@ -97,33 +97,31 @@ const AssessmentCard = ({
           ))}
         </div>
         {commentStatus == 'closed' && (
-          <Button variant='contained-wh' size='md' onClick={() => setCommentStatus('editing')}>
+          <Button variant='contained-wh' className='self-end' size='md' onClick={() => setCommentStatus('editing')}>
             + Comment
           </Button>
         )}
-      </div>
+        {commentStatus == 'editing' && (
+          <CommentInput
+            comment={localComment || ''}
+            onSave={handleCommentSave}
+            onCancel={() => setCommentStatus(localComment ? 'read' : 'closed')}
+            isSubmitting={isSubmittingComment}
+          />
+        )}
+        {commentStatus == 'read' && (
+          <div className='italic p-4 bg-[rgba(255,255,255,.5)] rounded-md w-[85%] flex justify-between gap-4'>
+            <p className='text-gray-700 mb-4'>{localComment}</p>
 
-      {commentStatus == 'editing' && (
-        <CommentInput
-          comment={localComment || ''}
-          onSave={handleCommentSave}
-          onCancel={() => setCommentStatus(localComment ? 'read' : 'closed')}
-          isSubmitting={isSubmittingComment}
-        />
-      )}
-      {commentStatus == 'read' && (
-        <div className='italic mt-4 p-4 bg-[rgba(255,255,255,.5)] rounded-md w-[85%]'>
-          <p className='text-gray-700 mb-4'>{localComment}</p>
-          <div className='flex gap-2'>
-            <Button variant='contained-wh' size='md' onClick={() => setCommentStatus('editing')}>
-              Edit
-            </Button>
-            {/* <Button variant='contained-wh' size='md' onClick={() => setLocalComment('')}>
-              Remove
-            </Button> */}
+            <button
+              className='bg-white hover:bg-[rgba(0,0,0,.7)] min-w-10 h-10 grid place-items-center rounded-full '
+              onClick={() => setCommentStatus('editing')}
+            >
+              <PencilIcon className='w-6 h-6' />
+            </button>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   )
 }

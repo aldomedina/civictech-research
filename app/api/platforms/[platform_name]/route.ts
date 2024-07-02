@@ -37,14 +37,31 @@ export async function GET(request: Request, { params }: { params: { platform_nam
     GROUP BY a.type
   `
 
+  // Query to get the total number of notes for the given platform
+  const totalNotesQuery = await sql`
+  SELECT COUNT(*) as total
+  FROM notes
+  WHERE platform_id = ${platformId} AND user_id = ${userId}
+`
+
   const totalAssessments = totalAssessmentsQuery.rows
   const answeredAssessments = answeredAssessmentsQuery.rows
+  const totalNotes = totalNotesQuery.rows[0].total || 0
 
   // Combine the results into the desired format
-  const result = ['before', 'during', 'after'].map((type) => {
+  const result: {
+    type: string
+    count: any
+    total?: any
+  }[] = ['before', 'during', 'after'].map((type) => {
     const total = totalAssessments.find((item) => item.type === type)?.total || 0
     const count = answeredAssessments.find((item) => item.type === type)?.count || 0
     return { type, total, count }
+  })
+
+  result.push({
+    type: 'notes',
+    count: totalNotes,
   })
 
   return NextResponse.json(result)
