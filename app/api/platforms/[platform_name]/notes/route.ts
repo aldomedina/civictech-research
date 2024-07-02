@@ -1,20 +1,11 @@
-import { authOptions } from '@/lib/auth'
-import { getServerSession } from 'next-auth/next'
+import { getUserAndPlatformIds } from '@/lib/utils'
 import { sql } from '@vercel/postgres'
 
 export async function GET(request: Request, { params }: { params: { platform_name: string } }) {
-  const session = await getServerSession(authOptions)
-  if (!session) {
-    return Response.json({ error: 'Unauthorized' }, { status: 401 })
+  const { userId, platformId, error } = await getUserAndPlatformIds(request, params.platform_name)
+  if (error) {
+    return Response.json({ error }, { status: 401 })
   }
-  // @ts-ignore
-  const userId = session?.user?.id || ''
-  const { platform_name } = params
-  const platformQuery = await sql`SELECT id FROM platforms WHERE slug = ${platform_name}`
-  if (platformQuery.rows.length === 0) {
-    return Response.json({ error: 'Platform not found' }, { status: 404 })
-  }
-  const platformId = platformQuery.rows[0].id
 
   const notesQuery = await sql`
     SELECT n.id, n.comment AS note, 'Note Title' AS title, n.last_update AS "lastUpdated"
@@ -33,17 +24,12 @@ export async function GET(request: Request, { params }: { params: { platform_nam
 }
 
 export async function POST(request: Request, { params }: { params: { platform_name: string } }) {
-  const session = await getServerSession(authOptions)
-  // @ts-ignore
-  const userId = session?.user?.id || ''
-  const { platform_name } = params
-  const { note } = await request.json()
-
-  const platformQuery = await sql`SELECT id FROM platforms WHERE slug = ${platform_name}`
-  if (platformQuery.rows.length === 0) {
-    return Response.json({ error: 'Platform not found' }, { status: 404 })
+  const { userId, platformId, error } = await getUserAndPlatformIds(request, params.platform_name)
+  if (error) {
+    return Response.json({ error }, { status: 401 })
   }
-  const platformId = platformQuery.rows[0].id
+
+  const { note } = await request.json()
 
   const insertNoteQuery = await sql`
     INSERT INTO notes (user_id, platform_id, comment, created_at, last_update)
@@ -57,20 +43,12 @@ export async function POST(request: Request, { params }: { params: { platform_na
 }
 
 export async function PATCH(request: Request, { params }: { params: { platform_name: string } }) {
-  const session = await getServerSession(authOptions)
-  if (!session) {
-    return Response.json({ error: 'Unauthorized' }, { status: 401 })
+  const { userId, platformId, error } = await getUserAndPlatformIds(request, params.platform_name)
+  if (error) {
+    return Response.json({ error }, { status: 401 })
   }
-  // @ts-ignore
-  const userId = session?.user?.id || ''
-  const { platform_name } = params
-  const { note, noteId: note_id } = await request.json()
 
-  const platformQuery = await sql`SELECT id FROM platforms WHERE slug = ${platform_name}`
-  if (platformQuery.rows.length === 0) {
-    return Response.json({ error: 'Platform not found' }, { status: 404 })
-  }
-  const platformId = platformQuery.rows[0].id
+  const { note, noteId: note_id } = await request.json()
 
   const updateNoteQuery = await sql`
     UPDATE notes
@@ -89,20 +67,12 @@ export async function PATCH(request: Request, { params }: { params: { platform_n
 }
 
 export async function DELETE(request: Request, { params }: { params: { platform_name: string } }) {
-  const session = await getServerSession(authOptions)
-  if (!session) {
-    return Response.json({ error: 'Unauthorized' }, { status: 401 })
+  const { userId, platformId, error } = await getUserAndPlatformIds(request, params.platform_name)
+  if (error) {
+    return Response.json({ error }, { status: 401 })
   }
-  //@ts-ignore
-  const userId = session?.user?.id || ''
-  const { platform_name } = params
-  const { noteId: note_id } = await request.json()
 
-  const platformQuery = await sql`SELECT id FROM platforms WHERE slug = ${platform_name}`
-  if (platformQuery.rows.length === 0) {
-    return Response.json({ error: 'Platform not found' }, { status: 404 })
-  }
-  const platformId = platformQuery.rows[0].id
+  const { noteId: note_id } = await request.json()
 
   const deleteNoteQuery = await sql`
     DELETE FROM notes
